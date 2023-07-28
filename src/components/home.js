@@ -17,3 +17,37 @@ const settings = {
   // You can read more about the packages here:
   //   https://docs.alchemy.com/reference/alchemy-sdk-api-surface-overview#api-surface
 export const alchemy = new Alchemy(settings);
+
+export function Home(){
+    const [latestBlocks, setLatestBlocks] = useState();
+    const [blockNumber, setBlockNumber] = useState();
+    const [latestTransactions, setLatestTransactions] = useState();
+
+    useEffect(() => {
+        let blockArray = [];
+        let transactionArray = [];
+        const getLatestBlocks = async () => {
+          const blockNumber = await alchemy.core.getBlockNumber()
+          setBlockNumber(blockNumber);
+          for (let i = 0; i < 15; i++){
+            const block = await alchemy.core.getBlock(blockNumber - i);
+            blockArray.push(block);
+          }
+          setLatestBlocks(blockArray);
+          console.log("latest block: ", latestBlocks);
+        }
+
+        const getLatestTransactions = async () => {
+            const lastBlock = await alchemy.core.getBlockWithTransactions(blockNumber);
+            for (let i = 0; i < 15; i++){
+                transactionArray.push(lastBlock.transactions[i]);
+            }
+            setLatestTransactions(transactionArray);
+            console.log("latest transactions: ", latestTransactions);
+        }
+    
+        getLatestBlocks();
+        getLatestTransactions();
+
+    }, []);
+}
