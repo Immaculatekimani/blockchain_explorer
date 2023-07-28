@@ -50,4 +50,58 @@ export function Home(){
         getLatestTransactions();
 
     }, []);
+    return (
+    <div> 
+        <Container className = "wrapper">
+            <br></br>
+            {!latestTransactions || latestBlocks ? (
+                <div>Loading ...</div>
+            ) : (
+                <>
+                <Container className="block">
+                    <Table striped responsive hover>
+                        <thead>
+                            <tr>
+                                <th>Latest Blocks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(latestBlocks.map((block, i) => {
+                            return (
+                                <tr key={i}>
+                                    <td>Block <Link to={`/block/${block.number}`}>{block.number}</Link> </td>
+                                    <td>Fee recipient <Link to={`/address/${block.miner}`}>{block.miner.slice(0, 10)}...</Link></td>
+                                    <td>{block.transactions.length} tx</td>
+                                </tr>)
+                            }))}
+                        </tbody>
+                    </Table>
+                </Container>
+                <Container className="latestTable">
+                    <Table striped responsive hover>
+                        <thead>
+                            <tr>
+                            <th>Latest Transactions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(latestTransactions.map((transaction, i) => {
+                                return (
+                                    <tr key={i}>
+                                        <td><Link to={`/transaction/${transaction.hash}`}>{transaction.hash.slice(0, 15)}...</Link></td>
+                                        <td>
+                                            From: <Link to={`/address/${transaction.from}`}>{transaction.from.slice(0,10)}...</Link> 
+                                            <br/>
+                                            To: <Link to={`/address/${transaction.to}`}>{transaction.to.slice(0, 10)}...</Link>
+                                        </td>
+                                        <td>{formatEther(transaction.value).slice(0,5)} ETH</td>
+                                    </tr>)
+                                }))}
+                        </tbody>
+                    </Table>
+                </Container>
+                </>
+            )}
+        </Container>
+    </div>);
 }
